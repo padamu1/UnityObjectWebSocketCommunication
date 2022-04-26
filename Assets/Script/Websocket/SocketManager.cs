@@ -3,6 +3,9 @@ using System.Collections;
 using WebSocketSharp;
 using System;
 
+/// <summary>
+/// 플레이어의 위치정보가 담겨있는 클래스.
+/// </summary>
 [System.Serializable]
 public class PositionData
 {
@@ -13,11 +16,9 @@ public class PositionData
     public float z;
     public void Print()
     {
-        Debug.Log("x : "+x + "y : " + y + "z : " + z);
+        Debug.Log("x : " + x + "y : " + y + "z : " + z);
     }
 }
-
-
 
 public class SocketManager : MonoBehaviour
 {
@@ -60,12 +61,18 @@ public class SocketManager : MonoBehaviour
         */
     }
 
+    /// <summary>
+    /// 새로운 데이터를 받아오는 메서드.
+    /// </summary>
     public void Recv(object sender, MessageEventArgs e)
     {
         //Debug.Log(e.Data);
         data =e.Data;
     }
 
+    /// <summary>
+    /// 플레이어의 위치정보를 표시함.
+    /// </summary>
     void DataProcess()
     {
         // 데이터 처리
