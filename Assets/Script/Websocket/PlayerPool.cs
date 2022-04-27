@@ -15,7 +15,7 @@ public class PlayerPool : MonoBehaviour
         instance = this;
     }
 
-    void Start()
+    void OnEnable()
     {
         listOfPlayer = new List<GameObject>();
         if (maxPlayerCount <= 0) Debug.Log("오브젝트가 생성되지 않음.");
