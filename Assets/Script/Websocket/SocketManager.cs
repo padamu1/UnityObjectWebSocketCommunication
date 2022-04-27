@@ -33,7 +33,9 @@ public class SocketManager : MonoBehaviour
     {
         myObject = null;
         data = "";
-        player=Instantiate(playerObject,new Vector3(1f,0.5f,1f), Quaternion.identity);
+        player = PlayerPool.instance.GetPlayerInPool();
+        player.transform.position = new Vector3(0f, 0.5f, 0f);
+        player.SetActive(true);
         playerTransform = player.GetComponent<Transform>();
         //InvokeRepeating(함수명, 지연초, 반복초);
         positionData = new PositionData();
