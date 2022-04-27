@@ -70,14 +70,13 @@ public class SocketManager : MonoBehaviour
     PositionData positionData;
     private List<OtherPlayerObject> OtherPlayerList;
     private WebSocketSharp.WebSocket m_Socket = null;
-    private GameObject player;
+    public GameObject player;
     private Transform playerTransform;
     private void Start()
     {
         OtherPlayerList = new List<OtherPlayerObject>();
         myObject = null;
         data = "";
-        player = PlayerPool.instance.GetPlayerInPool();
         player.transform.position = new Vector3(0f, 0.5f, 0f);
         player.SetActive(true);
         playerTransform = player.GetComponent<Transform>();
