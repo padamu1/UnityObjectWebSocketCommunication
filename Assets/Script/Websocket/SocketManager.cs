@@ -68,17 +68,17 @@ public class SocketManager : MonoBehaviour
     string data;
     PositionData myObject;
     PositionData positionData;
+    public GameObject playerObject;
     private List<OtherPlayerObject> OtherPlayerList;
     private WebSocketSharp.WebSocket m_Socket = null;
-    public GameObject player;
+    private GameObject player;
     private Transform playerTransform;
     private void Start()
     {
         OtherPlayerList = new List<OtherPlayerObject>();
         myObject = null;
         data = "";
-        player.transform.position = new Vector3(0f, 0.5f, 0f);
-        player.SetActive(true);
+        player = Instantiate(playerObject, new Vector3(0f, 0.5f, 0f),Quaternion.identity);
         playerTransform = player.GetComponent<Transform>();
         InvokeRepeating("SendPlayerPosition", 0, 1);
         positionData = new PositionData();
