@@ -5,8 +5,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Transform transform;
+    private bool inputCheck;
     void Start()
     {
+        inputCheck = false;
         transform = this.GetComponent<Transform>();
     }
 
@@ -14,18 +16,22 @@ public class PlayerController : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.W))
         {
+            inputCheck = true;
             transform.position += (new Vector3(1f, 0f, 0f) * Time.deltaTime * 100f);
         }
         if (Input.GetKey(KeyCode.A))
         {
+            inputCheck = true;
             transform.position += (new Vector3(0f, 0f, 1f) * Time.deltaTime * 100f);
         }
         if (Input.GetKey(KeyCode.S))
         {
+            inputCheck = true;
             transform.position += (new Vector3(-1f, 0f, 0f) * Time.deltaTime * 100f);
         }
         if (Input.GetKey(KeyCode.D))
         {
+            inputCheck = true;
             transform.position += (new Vector3(0f, 0f, -1f) * Time.deltaTime * 100f);
         }
         if(Input.GetKeyDown(KeyCode.F))
@@ -37,6 +43,15 @@ public class PlayerController : MonoBehaviour
                 bullet.transform.position = transform.position;
                 bullet.SetActive(true);
             }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (inputCheck)
+        {
+            SocketManager.insatance.SendPlayerPosition(transform.position);
+            inputCheck = false;
         }
     }
 }

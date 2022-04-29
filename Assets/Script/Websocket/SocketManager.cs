@@ -65,22 +65,27 @@ public class OtherPlayerObject
 /// </summary>
 public class SocketManager : MonoBehaviour
 {
+    public static SocketManager instance;
     string data;
     PositionData myObject;
     PositionData positionData;
     public GameObject playerObject;
     private List<OtherPlayerObject> OtherPlayerList;
     private WebSocketSharp.WebSocket m_Socket = null;
-    private GameObject player;
-    private Transform playerTransform;
+
+    void Awake()
+    {
+        if(instance == null)
+            instance = this;
+    }
+
     private void Start()
     {
         OtherPlayerList = new List<OtherPlayerObject>();
         myObject = null;
         data = "";
-        player = Instantiate(playerObject, new Vector3(0f, 0.5f, 0f),Quaternion.identity);
-        playerTransform = player.GetComponent<Transform>();
-        InvokeRepeating("SendPlayerPosition", 0, 1);
+        Instantiate(playerObject, new Vector3(0f, 0.5f, 0f),Quaternion.identity);
+        //InvokeRepeating("SendPlayerPosition", 0, 1);
         positionData = new PositionData();
         positionData.type = "위치정보";
         positionData.name = "user_1";
@@ -100,11 +105,11 @@ public class SocketManager : MonoBehaviour
     /// <summary>
     /// 위치정보에 대한 데이터를 내보냄.
     /// </summary>
-    public void SendPlayerPosition()
+    public void SendPlayerPosition(Vector3 playerPosition)
     {
-        positionData.x = playerTransform.position.x;
-        positionData.y = playerTransform.position.y;
-        positionData.z = playerTransform.position.z;
+        positionData.x = playerPosition.x;
+        positionData.y = playerPosition.y;
+        positionData.z = playerPosition.z;
         m_Socket.Send(JsonUtility.ToJson(positionData));
     }
 
@@ -115,7 +120,7 @@ public class SocketManager : MonoBehaviour
     {
         // 데이터 처리
         Debug.Log(data);
-        if (data != "")
+        if (data != null)
         {
             RecvData newData = JsonUtility.FromJson<RecvData>(data);
             if (newData.type == "위치정보")
@@ -142,12 +147,12 @@ public class SocketManager : MonoBehaviour
             }
         }
 
-        data = "";
+        data = null;
     }
 
     void Update()
     {
-        if(data != "")
+        if(data != null)
         {
             // data가 공백이 아닌 경우 활용.
             DataProcess();
