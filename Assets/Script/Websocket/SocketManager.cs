@@ -89,7 +89,7 @@ public class SocketManager : MonoBehaviour
         //InvokeRepeating("SendPlayerPosition", 0, 1);
         positionData = new PositionData();
         positionData.type = "위치정보";
-        positionData.name = "user_3"; // 식별 가능한 id 값을 입력해야함.
+        positionData.name = "user_1"; // 식별 가능한 id 값을 입력해야함.
         m_Socket = new WebSocketSharp.WebSocket("ws://localhost:3000"); // 서버 ip주소
         m_Socket.OnMessage += Recv;
         m_Socket.Connect();
