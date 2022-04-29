@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         if (inputCheck)
         {
-            SocketManager.insatance.SendPlayerPosition(transform.position);
+            SocketManager.instance.SendPlayerPosition(transform.position);
             inputCheck = false;
         }
     }
