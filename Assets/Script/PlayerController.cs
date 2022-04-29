@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     {
         inputCheck = false;
         transform = this.GetComponent<Transform>();
+        SocketManager.instance.SendPlayerPosition(transform.position);
     }
 
     void Update()

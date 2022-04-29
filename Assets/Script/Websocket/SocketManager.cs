@@ -66,11 +66,12 @@ public class OtherPlayerObject
 public class SocketManager : MonoBehaviour
 {
     public static SocketManager instance;
-    string data;
+    List<string> data;
     PositionData myObject;
     PositionData positionData;
     public GameObject playerObject;
     private List<OtherPlayerObject> OtherPlayerList;
+    private bool checkUser;
     private WebSocketSharp.WebSocket m_Socket = null;
 
     void Awake()
@@ -83,13 +84,13 @@ public class SocketManager : MonoBehaviour
     {
         OtherPlayerList = new List<OtherPlayerObject>();
         myObject = null;
-        data = "";
+        data = new List<string>();
         Instantiate(playerObject, new Vector3(0f, 0.5f, 0f),Quaternion.identity);
         //InvokeRepeating("SendPlayerPosition", 0, 1);
         positionData = new PositionData();
         positionData.type = "위치정보";
-        positionData.name = "user_1";
-        m_Socket = new WebSocketSharp.WebSocket("ws://localhost:3000");
+        positionData.name = "user_3"; // 식별 가능한 id 값을 입력해야함.
+        m_Socket = new WebSocketSharp.WebSocket("ws://localhost:3000"); // 서버 ip주소
         m_Socket.OnMessage += Recv;
         m_Socket.Connect();
     }
@@ -99,7 +100,7 @@ public class SocketManager : MonoBehaviour
     /// </summary>
     public void Recv(object sender, MessageEventArgs e)
     {
-        data = e.Data;
+        data.Add(e.Data);
     }
 
     /// <summary>
@@ -118,41 +119,44 @@ public class SocketManager : MonoBehaviour
     /// </summary>
     void DataProcess()
     {
-        // 데이터 처리
-        Debug.Log(data);
-        if (data != null)
+        for(int i = 0; i < data.Count; i++)
         {
-            RecvData newData = JsonUtility.FromJson<RecvData>(data);
-            if (newData.type == "위치정보")
+            Debug.Log(data[i]);
+            if (data[i] != null)
             {
-                myObject = JsonUtility.FromJson<PositionData>(data);
-                if (OtherPlayerList.Count > 0)
+                checkUser = false;
+                RecvData newData = JsonUtility.FromJson<RecvData>(data[i]);
+                if (newData.type == "위치정보")
                 {
-                    for (int i = 0; i < OtherPlayerList.Count; i++)
+                    myObject = JsonUtility.FromJson<PositionData>(data[i]);
+                    if (OtherPlayerList.Count > 0)
                     {
-                        if (OtherPlayerList[i].ObjectName == myObject.name)
+                        for (int j = 0; j < OtherPlayerList.Count; j++)
                         {
-                            OtherPlayerList[i].GameObject.transform.position = myObject.GetPosition();
+                            if (OtherPlayerList[j].ObjectName == myObject.name)
+                            {
+                                OtherPlayerList[j].GameObject.transform.position = myObject.GetPosition();
+                                checkUser = true;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    OtherPlayerObject tmp = new OtherPlayerObject();
-                    tmp.ObjectName = myObject.name;
-                    tmp.GameObject = PlayerPool.instance.GetPlayerInPool();
-                    tmp.GameObject.transform.position = myObject.GetPosition();
-                    OtherPlayerList.Add(tmp);
+                    if(!checkUser)
+                    {
+                        OtherPlayerObject tmp = new OtherPlayerObject();
+                        tmp.ObjectName = myObject.name;
+                        tmp.GameObject = PlayerPool.instance.GetPlayerInPool();
+                        tmp.GameObject.transform.position = myObject.GetPosition();
+                        OtherPlayerList.Add(tmp);
+                    }
                 }
             }
         }
-
-        data = null;
+        data = new List<string>();
     }
 
     void Update()
     {
-        if(data != null)
+        if(data.Count>0)
         {
             // data가 공백이 아닌 경우 활용.
             DataProcess();
