@@ -386,7 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolObject: {fileID: 286209531186050066, guid: 452fe14343631e14cba4a1ba0cd868b4, type: 3}
-  poolCapacity: 3
+  poolCapacity: 10
 --- !u!114 &820676730
 MonoBehaviour:
   m_ObjectHideFlags: 0
